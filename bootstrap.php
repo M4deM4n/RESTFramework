@@ -20,7 +20,7 @@ require_once(REST_FRAMEWORK.'interface/responsecodetranslator.class.php');
 
 // REQUIRE ABSTRACT CLASSES
 require_once(REST_FRAMEWORK.'abstract/endpoint.abstract.php');
-require_once(REST_FRAMEWORK.'abstract/api.abstract.php');
+require_once(REST_FRAMEWORK.'abstract/restframework.abstract.php');
 
 // REQUIRE API UTILITY CLASSES
 require_once(REST_FRAMEWORK.'class/autoloader.class.php');

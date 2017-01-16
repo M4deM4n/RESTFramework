@@ -9,7 +9,7 @@
  * @author Jeff Pizano <jeff@jeffpizano.com>
  * @copyright Copyright (c) 2014, Jeff Pizano
  */
-abstract class API
+abstract class RESTFramework
 {
     
     const CONTENT_TYPE_PLAIN = 'Content-Type: text/plain';
@@ -21,7 +21,7 @@ abstract class API
      *
      * @var type 
      */
-    private $contentType;
+    protected $contentType;
     
     /**
      * The name of the current Endpoint.
@@ -77,7 +77,13 @@ abstract class API
      * If enabled it will allow for a response on error.
      * @var boolean
      */
-    private $respondOnError = false;
+    protected $respondOnError = false;
+
+    /**
+     * If enabled it will format JSON strings with line breaks.
+     * @var bool
+     */
+    protected $prettyPrint = false;
     
     
     /**
@@ -86,7 +92,6 @@ abstract class API
      * AutoLoader class.
      * 
      * @param array $request
-     * @return void
      */
     public function __construct($request) 
     {
@@ -96,7 +101,7 @@ abstract class API
         Request::$method    = strtoupper($_SERVER['REQUEST_METHOD']);
         Request::$args      = $this->getArgs($request);
         Request::$endpoint  = $this->getEndPoint();
-        Request::$verb      = $this->getVerb();
+//        Request::$verb      = $this->getVerb();
         
         $this->contentType = self::CONTENT_TYPE_JSON;
         $this->autoloader = new AutoLoader();
@@ -188,11 +193,11 @@ abstract class API
         $msg .= 'string.';
         throw new Exception($msg);
     }
-    
-    
+
+
     /**
-     * 
-     * @param type $object
+     * @param $object
+     * @throws Exception
      */
     protected function registerTranslator($object)
     {
@@ -252,16 +257,21 @@ abstract class API
         
         // USE AUTH HANDLER IF AVAILABLE
         if($this->useAuthHandler && $method != $this->authEndpoint && !$this->authHandler->isAuthenticated()) {
-            return $this->sendResponse("Permission Denied", 401);
+            $this->sendResponse("Permission Denied", 401);
+            return;
         }
         
         // EXECUTE ENDPOINT METHOD
         if(in_array($method, $this->endpointList) && method_exists($this, $method)) {
-            return $this->sendResponse($this->$method(), $this->getResponseCode());
+            $data = $this->$method();
+            $code = $this->getResponseCode();
+
+            $this->sendResponse($data, $code);
+            return;
         }
 
         // FAIL ON BAD ENDPOINT
-        return $this->sendResponse("Invalid Endpoint: " . Request::$endpoint, 404);
+        $this->sendResponse("Invalid Endpoint: " . Request::$endpoint, 404);
     }
     
     
@@ -269,20 +279,22 @@ abstract class API
      * This method sets the appropriate headers based on the request and writes
      * the response data to stdout in a JSON encoded string.
      * 
-     * @param type $data
-     * @param type $status
+     * @param string $data
+     * @param int $status
      */
     protected function sendResponse($data, $status = 200)
     {
         header("HTTP/1.1 " . $status . " " . $this->translateCode($status));
-        if($this->respondOnError)
+
+        if($status == 200 || $status == 201 || $this->respondOnError) {
             echo $this->renderResponse($data);
+        }
     }
-    
-    
+
+
     /**
-     * 
-     * @param type $data
+     * @param $data
+     * @return string
      */
     protected function renderResponse($data)
     {
@@ -290,7 +302,7 @@ abstract class API
         switch($this->contentType)
         {
             case self::CONTENT_TYPE_JSON:
-                return json_encode($data);
+                return json_encode($data,($this->prettyPrint ? JSON_PRETTY_PRINT : 0));
             
             default:
                 return $data;

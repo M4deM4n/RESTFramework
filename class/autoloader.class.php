@@ -37,31 +37,30 @@ class AutoLoader
      * This method is the primary entry point for this class. It's only purpose
      * is to register this classes `autoLoad` method as a PHP autoloader.
      * 
-     * @return void
      */
     public function __construct()
     {
         spl_autoload_register(array($this, 'autoload'));
     }
-    
-    
+
+
     /**
      * This method is used to define needles to search for within class names
      * and define their associated path.
-     * 
+     *
      * @todo Write better description of this method.
-     * 
-     * @param string $tag
+     *
+     * @param string $suffix
      * @param string $path
-     * @return void 
+     * @param string $extension
      */
-    public function addDefinition($tag, $path, $extension = '.class.php')
+    public function lookFor($suffix, $path, $extension = '.class.php')
     {
-        if(!array_key_exists($tag, $this->classType))
-            array_push($this->classType, $tag);
+        if(!array_key_exists($suffix, $this->classType))
+            array_push($this->classType, $suffix);
         
-        $this->classPath[$tag] = $path;
-        $this->classExtension[$tag] = $extension;
+        $this->classPath[$suffix] = $path;
+        $this->classExtension[$suffix] = $extension;
     }
     
     
