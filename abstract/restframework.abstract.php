@@ -257,7 +257,7 @@ abstract class RESTFramework
         
         // USE AUTH HANDLER IF AVAILABLE
         if($this->useAuthHandler && $method != $this->authEndpoint && !$this->authHandler->isAuthenticated()) {
-            $this->sendResponse("Permission Denied", 401);
+            $this->sendResponse($this->translator->translateCode(401), 401);
             return;
         }
         
@@ -271,7 +271,7 @@ abstract class RESTFramework
         }
 
         // FAIL ON BAD ENDPOINT
-        $this->sendResponse("Invalid Endpoint: " . Request::$endpoint, 404);
+        $this->sendResponse($this->translator->translateCode(404), 404);
     }
     
     
@@ -284,7 +284,7 @@ abstract class RESTFramework
      */
     protected function sendResponse($data, $status = 200)
     {
-        header("HTTP/1.1 " . $status . " " . $this->translateCode($status));
+        header("HTTP/1.1 " . $status . " " . $this->translator->translateCode($status));
 
         if($status == 200 || $status == 201 || $this->respondOnError) {
             echo $this->renderResponse($data);
