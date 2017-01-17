@@ -26,14 +26,7 @@ class Request
      * @var string
      */
     public static $endpoint;
-    
-    /**
-     * This property contains the requested Verb or action.
-     * 
-     * @var string 
-     */
-    public static $verb;
-    
+
     /**
      * This property contains a list of any parameters not defined as an
      * endpoint or verb.

@@ -21,7 +21,7 @@ abstract class RESTFramework
      *
      * @var type 
      */
-    protected $contentType;
+    protected $contentType = self::CONTENT_TYPE_JSON;
     
     /**
      * The name of the current Endpoint.
@@ -31,7 +31,7 @@ abstract class RESTFramework
     private $authEndpoint;
     
     /**
-     * Dictates wheter or not to use a supplied auth handler.
+     * Dictates whether or not to use a supplied auth handler.
      * 
      * @var boolean
      */
@@ -96,13 +96,11 @@ abstract class RESTFramework
     public function __construct($request) 
     {
         header("Access-Control-Allow-Methods: *");
-        header("Content-Type: application/json");
-        
+
         Request::$method    = strtoupper($_SERVER['REQUEST_METHOD']);
         Request::$args      = $this->getArgs($request);
         Request::$endpoint  = $this->getEndPoint();
-//        Request::$verb      = $this->getVerb();
-        
+
         $this->contentType = self::CONTENT_TYPE_JSON;
         $this->autoloader = new AutoLoader();
         $this->translator = new DefaultTranslator();
@@ -152,21 +150,7 @@ abstract class RESTFramework
     {
         return array_shift(Request::$args);
     }
-    
-    
-    /**
-     * This method returns the first element from a request and if non-numeric,
-     * designates it as a Verb. Verbs are defined as supplimentary actions for
-     * Endpoints. If the element is numeric, it will be defined as a parameter.
-     * 
-     * @return String
-     */
-    private function getVerb()
-    {
-        if(array_key_exists(0, Request::$args) && !is_numeric(Request::$args[0]))
-                return array_shift(Request::$args);
-    }
-    
+
     
     /**
      * This is an optional method that when called will force the REST API to 
@@ -257,7 +241,7 @@ abstract class RESTFramework
         
         // USE AUTH HANDLER IF AVAILABLE
         if($this->useAuthHandler && $method != $this->authEndpoint && !$this->authHandler->isAuthenticated()) {
-            $this->sendResponse($this->translator->translateCode(401), 401);
+            $this->sendResponse($this->translateCode(401), 401);
             return;
         }
         
@@ -271,7 +255,7 @@ abstract class RESTFramework
         }
 
         // FAIL ON BAD ENDPOINT
-        $this->sendResponse($this->translator->translateCode(404), 404);
+        $this->sendResponse($this->translateCode(404), 404);
     }
     
     
@@ -284,7 +268,7 @@ abstract class RESTFramework
      */
     protected function sendResponse($data, $status = 200)
     {
-        header("HTTP/1.1 " . $status . " " . $this->translator->translateCode($status));
+        header("HTTP/1.1 " . $status . " " . $this->translateCode($status));
 
         if($status == 200 || $status == 201 || $this->respondOnError) {
             echo $this->renderResponse($data);
