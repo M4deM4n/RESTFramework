@@ -114,6 +114,17 @@ abstract class RESTFramework
      */
     public function __construct($request) 
     {
+        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            if(isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']) && isset($_SERVER['HTTP_ORIGIN'])) {
+                header("Access-Control-Allow-Origin: *");
+                header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE");
+                header("Access-Control-Allow-Headers: x-api-key, x-auth-token");
+                header("Access-Control-Max-Age: 3600");
+            }
+            exit;
+        }
+        
+        header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: *");
 
         Request::$method    = strtoupper($_SERVER['REQUEST_METHOD']);
