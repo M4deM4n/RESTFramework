@@ -29,12 +29,24 @@ class CORSConfig {
         array_push($this->allowed_origins, $origin);
     }
 
+    public function setAllowedOrigins(array $origins) {
+        $this->allowed_origins = $origins;
+    }
+
     public function addAllowedMethod($method) {
         array_push($this->allowed_methods, $method);
     }
 
+    public function setAllowedMethods(array $methods) {
+        $this->allowed_methods = $methods;
+    }
+
     public function addAllowedHeader($header) {
         array_push($this->allowed_headers, $header);
+    }
+
+    public function setAllowedHeaders(array $headers) {
+        $this->allowed_headers = $headers;
     }
 
     public function setMaxAge($maxage) {
