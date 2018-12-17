@@ -1,8 +1,14 @@
 {
     "name": "m4dem4n/rest-framework",
     "description": "A PHP RESTful API Framework",
-    "version": "1.0",
+    "authors": [
+        {
+            "name": "Jeff Pizano",
+            "email": "jeff@jeffpizano.com"
+        }
+    ],
     "license": "MIT",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.6",
         "ext-json": "*"
