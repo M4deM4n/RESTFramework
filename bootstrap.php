@@ -14,6 +14,9 @@
 // REQUIRE RUNTIME CONFIGURATION
 require_once(REST_FRAMEWORK.'runconfig/request.class.php');
 
+// REQUIRE CONFIGURATION
+require_once(REST_FRAMEWORK.'class/corsconfig.class.php');
+
 // REQUIRE INTERFACES
 require_once(REST_FRAMEWORK.'interface/authhandler.class.php');
 require_once(REST_FRAMEWORK.'interface/responsecodetranslator.class.php');
