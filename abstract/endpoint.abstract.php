@@ -176,4 +176,17 @@ abstract class Endpoint
         $this->setResponse($this->response);
         $this->setResponseCode(405);
     }
+    
+    
+    /**
+     * (Optional)
+     * This method set the HTTP Response code for instances where a request
+     * contains erroneous or missing data.
+     * 
+     * @return void
+     */
+    protected function badRequest()
+    {
+        $this->setResponseCode(DefaultTranslator::STATUS_BAD_REQUEST);
+    }
 }
