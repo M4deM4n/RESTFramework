@@ -1,0 +1,7 @@
+{
+    "name": "m4dem4n/RESTFramework",
+    "description": "A PHP RESTful API Framework",
+    "require": {
+        "php": "^5.6"
+    }
+}
