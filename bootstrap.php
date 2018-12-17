@@ -25,3 +25,4 @@ require_once(REST_FRAMEWORK.'abstract/restframework.abstract.php');
 // REQUIRE API UTILITY CLASSES
 require_once(REST_FRAMEWORK.'class/autoloader.class.php');
 require_once(REST_FRAMEWORK.'class/defaulttranslator.class.php');
+require_once(REST_FRAMEWORK.'class/contenttype.class.php');
