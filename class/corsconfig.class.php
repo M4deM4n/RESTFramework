@@ -78,6 +78,6 @@ class CORSConfig {
         }
         
         header("Access-Control-Allow-Origin: " . implode(', ', $this->allowed_origins));
-        // header("Access-Control-Allow-Methods: " . implode(', ', $this->allowed_methods));
+        header("Access-Control-Allow-Methods: " . implode(', ', $this->allowed_methods));
     }
 }
