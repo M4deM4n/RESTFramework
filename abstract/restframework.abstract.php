@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 /**
  * API
  * 
@@ -17,11 +18,13 @@ abstract class RESTFramework
     const CONTENT_TYPE_JSON = 'Content-Type: text/json';
     const CONTENT_TYPE_XML = 'Content-Type: text/xml';
     
+    
     /**
      *
      * @var type 
      */
     protected $contentType = self::CONTENT_TYPE_JSON;
+    
     
     /**
      * The name of the current Endpoint.
@@ -29,6 +32,7 @@ abstract class RESTFramework
      * @var String
      */
     private $authEndpoint;
+    
     
     /**
      * Dictates whether or not to use a supplied auth handler.
@@ -43,13 +47,15 @@ abstract class RESTFramework
      * 
      * @var Object
      */
-    private $authHandler;
+    protected $authHandler;
+    
     
     /**
      * Must implement the ResponseCodeTranslator interface.
      * @var Object 
      */
     protected $translator;
+    
     
     /**
      * An instance of the AutoLoader class used for dynamically loading php
@@ -59,12 +65,23 @@ abstract class RESTFramework
      */
     protected $autoloader;
     
+    
     /**
      * An indexed array of strings representing valid API endpoints.
      * 
      * @var Array Valid Endpoint list
      */
     private $endpointList = array();
+    
+    
+    /**
+     * An indexed array of strings representing valid API endpoints that 
+     * requires no authentication.
+     * 
+     * @var type 
+     */
+    private $openEndpointList = array();
+    
     
     /**
      * A numeric HTTP Response Code.
@@ -73,12 +90,14 @@ abstract class RESTFramework
      */
     private $httpResponseCode = 200;
     
+    
     /**
      * If enabled it will allow for a response on error.
      * @var boolean
      */
     protected $respondOnError = false;
 
+    
     /**
      * If enabled it will format JSON strings with line breaks.
      * @var bool
@@ -125,6 +144,37 @@ abstract class RESTFramework
         $message = __CLASS__.'::'.__METHOD__.' - ';
         $message .= 'Expected String';
         throw new Exception($message);
+    }
+    
+    
+    /**
+     * 
+     * @param type $endpoint
+     */
+    protected function addOpenEndpoint($endpoint)
+    {
+        if(is_string($endpoint)) {
+            array_push($this->endpointList, $endpoint);
+            array_push($this->openEndpointList, $endpoint);
+            return;
+        }
+        
+        $message = __CLASS__.'::'.__METHOD__.' - ';
+        $message .= 'Expected String';
+        throw new Exception($message);
+    }
+    
+    
+    /**
+     * This method returns a boolean true if the specified endpoint is an "open"
+     * endpoint, meaning that it does NOT require authentication.
+     * 
+     * @param type $endpoint
+     * @return type
+     */
+    protected function isOpen($endpoint)
+    {
+        return in_array($endpoint, $this->openEndpointList);
     }
     
     
@@ -240,7 +290,12 @@ abstract class RESTFramework
         $method = Request::$endpoint;
         
         // USE AUTH HANDLER IF AVAILABLE
-        if($this->useAuthHandler && $method != $this->authEndpoint && !$this->authHandler->isAuthenticated()) {
+        if(
+            $this->useAuthHandler && 
+            !in_array($method, $this->openEndpointList) &&
+            $method != $this->authEndpoint && 
+            !$this->authHandler->isAuthenticated()
+        ) {
             $this->sendResponse($this->translateCode(401), 401);
             return;
         }
