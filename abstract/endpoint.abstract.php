@@ -29,6 +29,12 @@ abstract class Endpoint
      */
     private $response;
     
+    /**
+     *
+     * @var type 
+     */
+    private $contentType = ContentType::JSON;
+    
     
     /**
      * 
@@ -86,6 +92,27 @@ abstract class Endpoint
     {
         return !empty(Request::$args);
     }
+    
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+    
+    
+    /**
+     * 
+     * @param type $contentType
+     */
+    public function setContentType($contentType) 
+    {
+        $this->contentType = $contentType;
+    }
+    
     
     /**
      * This method returns the numeric HTTP Response Code.
