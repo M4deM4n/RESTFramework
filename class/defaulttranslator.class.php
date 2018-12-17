@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (C) Solutions By Design - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited 
+ * Proprietary and confidential
+ */
+
 /**
  * DefaultTranslator
  * 
@@ -8,6 +14,14 @@
  */
 class DefaultTranslator implements ResponseCodeTranslator
 {
+    const STATUS_OK = 200;
+    const STATUS_BAD_REQUEST = 400;
+    const STATUS_UNAUTHORIZED = 401;
+    const STATUS_NOT_FOUND = 404;
+    const STATUS_METHOD_NOT_ALLOWED = 405;
+    const STATUS_INTERNAL_SERVER_ERROR = 500;
+    const STATUS_NOT_IMPLEMENTED = 501;
+    
     public $codeTranslation = array(
             200 => 'OK',
             400 => 'Bad Request',
@@ -18,11 +32,10 @@ class DefaultTranslator implements ResponseCodeTranslator
             501 => 'Not Implemented'
         );
     
-    
     public function translateCode($responseCode) 
     {
         return (!empty($this->codeTranslation[$responseCode]) 
                 ? $this->codeTranslation[$responseCode] 
-                : $this->codeTranslation[500]);
+                : $this->codeTranslation[self::STATUS_INTERNAL_SERVER_ERROR]);
     }
 }
