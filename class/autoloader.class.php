@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AutoLoader
  * 
@@ -7,7 +8,6 @@
  * 
  * @package RESTFramework
  * @author Jeff Pizano <jeff@jeffpizano.com>
- * @copyright Copyright (c) 2014, Jeff Pizano
  */
 class AutoLoader
 {
@@ -56,8 +56,9 @@ class AutoLoader
      */
     public function lookFor($suffix, $path, $extension = '.class.php')
     {
-        if(!array_key_exists($suffix, $this->classType))
+        if(!array_key_exists($suffix, $this->classType)) {
             array_push($this->classType, $suffix);
+        }
         
         $this->classPath[$suffix] = $path;
         $this->classExtension[$suffix] = $extension;
@@ -81,7 +82,8 @@ class AutoLoader
             if(strpos($className, $classType) === FALSE) { continue; }
                     
             $filePath = $this->classPath[$classType];
-            $filePath .= strtolower($className) . $this->classExtension[$classType];
+            $filePath .= strtolower(str_replace($classType, "", $className) . $this->classExtension[$classType]);
+            
             include_once($filePath);
             return;
         }
