@@ -13,10 +13,14 @@ error_reporting(0);
 abstract class RESTFramework
 {
     
-    const CONTENT_TYPE_PLAIN = 'Content-Type: text/plain';
-    const CONTENT_TYPE_HTML = 'Content-Type: text/html';
-    const CONTENT_TYPE_JSON = 'Content-Type: text/json';
-    const CONTENT_TYPE_XML = 'Content-Type: text/xml';
+    const CONTENT_TYPE_PLAIN    = 'Content-Type: text/plain';
+    const CONTENT_TYPE_HTML     = 'Content-Type: text/html';
+    const CONTENT_TYPE_JSON     = 'Content-Type: text/json';
+    const CONTENT_TYPE_XML      = 'Content-Type: text/xml';
+    const CONTENT_TYPE_STL      = 'Content-Type: application/vnd.ms-pkistl';
+    const CONTENT_TYPE_PDF      = 'Content-Type: application/pdf';
+    const CONTENT_TYPE_PNG      = 'Content-Type: image/png';
+    const CONTENT_TYPE_JPG      = 'Content-Type: image/jpg';
     
     
     /**
@@ -339,10 +343,20 @@ abstract class RESTFramework
      */
     protected function renderResponse($data)
     {
-        header($this->contentType);
         switch($this->contentType)
         {
+            case self::CONTENT_TYPE_HTML:
+            case self::CONTENT_TYPE_JPG:
+            case self::CONTENT_TYPE_PDF:
+            case self::CONTENT_TYPE_PLAIN:
+            case self::CONTENT_TYPE_PNG:
+            case self::CONTENT_TYPE_STL:
+            case self::CONTENT_TYPE_XML:
+                header($this->contentType);
+                return $data;
+            
             case self::CONTENT_TYPE_JSON:
+                header($this->contentType);
                 return json_encode($data,($this->prettyPrint ? JSON_PRETTY_PRINT : 0));
             
             default:
